@@ -1,16 +1,16 @@
 # 📊 quant-trading — 量化交易助手
 
-A股量化分析、交易决策与报告记录的统一入口。基于 OpenClaw AgentSkill 标准构建，调度两个已安装 Skill 的核心能力，完成「分析→决策→归档」闭环。
+A股量化分析、交易决策与报告记录的统一入口。遵循 [AgentSkills](https://agentskills.io) 标准，调度两个已安装 Skill 的核心能力，完成「分析→决策→归档」闭环。
 
 > 触发指令：`量化交易` 或 `/quant`
 
-[安装](#安装) · [使用](#使用) · [执行规则](#执行规则) · [决策权重](#决策权重) · [记录与归档](#记录与归档) · [目录结构](#目录结构)
+[依赖](#前置依赖) · [安装](#安装) · [使用](#使用) · [执行规则](#执行规则) · [决策权重](#决策权重) · [记录与归档](#记录与归档) · [目录结构](#目录结构)
 
 ---
 
 ## 前置依赖
 
-本 Skill **不包含独立的量化引擎**，核心能力完全依赖以下两个已安装的 Skill：
+本 Skill **不包含独立的量化引擎**，核心能力完全依赖以下两个已安装的 Skill，三者必须在同一目录下：
 
 | 依赖 Skill | 用途 | 仓库 |
 |-----------|------|------|
@@ -19,27 +19,29 @@ A股量化分析、交易决策与报告记录的统一入口。基于 OpenClaw 
 
 > ⚠️ **必须同时安装以上两个 Skill，否则本 Skill 无法运行。**
 
-依赖安装：
-
-```bash
-# 安装 cn-stock-quant
-cd ~/.openclaw/workspace/skills
-git clone https://github.com/CroTuyuzhe/cn-stock-quant.git
-
-# 安装 quant-stock-screener
-git clone https://github.com/CroTuyuzhe/quant-stock-screener.git
-```
-
 ---
 
 ## 安装
 
+### Claude Code
+
 ```bash
-cd ~/.openclaw/workspace/skills
-git clone https://github.com/CroTuyuzhe/quant-trading-normal.git quant-trading
+# 在你的项目根目录（git 仓库根目录）执行
+mkdir -p .claude/skills
+
+# 安装三个 Skill（本体 + 两个依赖）
+git clone https://github.com/CroTuyuzhe/quant-trading-normal.git .claude/skills/quant-trading
+git clone https://github.com/CroTuyuzhe/cn-stock-quant.git .claude/skills/cn-stock-quant
+git clone https://github.com/CroTuyuzhe/quant-stock-screener.git .claude/skills/quant-stock-screener
 ```
 
-安装完成后，OpenClaw 自动识别 `quant-trading/SKILL.md`，输入 `量化交易` 或 `/quant` 即可触发。
+### 依赖安装
+
+```bash
+pip install akshare pandas numpy scipy
+```
+
+安装完成后，输入 `量化交易` 或 `/quant` 即可触发。
 
 ---
 
@@ -144,6 +146,8 @@ references/records/YYYY-MM-DD.json
 ```
 quant-trading/
 ├── SKILL.md                          # Skill 入口与完整执行规则
+├── README.md
+├── LICENSE
 └── references/
     └── records/                      # 分析记录（按日期归档）
         ├── 2026-04-02.json

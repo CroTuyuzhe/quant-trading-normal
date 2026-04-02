@@ -39,7 +39,7 @@ description: |
 
 1. 调用 cn-stock-quant 核心分析：
    ```bash
-   cd ~/.openclaw/workspace/skills/cn-stock-quant/scripts && python3 quant_analysis.py <CODE> --format json
+   cd {baseDir}/../cn-stock-quant/scripts && python3 quant_analysis.py <CODE> --format json
    ```
 2. 解析 JSON 输出，提取关键因子信号：估值分位、因子评分、风险指标、动量信号
 3. 根据因子权重生成单步交易结论（买入/观望/规避）
@@ -62,7 +62,7 @@ description: |
 
 1. 调用 quant-stock-screener 进行选股：
    ```bash
-   cd ~/.openclaw/workspace/skills/quant-stock-screener/scripts && python3 screener_main.py --strategies 123456 --market a --top 30 --format json
+   cd {baseDir}/../quant-stock-screener/scripts && python3 screener_main.py --strategies 123456 --market a --top 30 --format json
    ```
 2. 取 Top 5 个股，逐只调用 cn-stock-quant 深度分析
 3. 为每只输出独立交易结论
@@ -115,12 +115,12 @@ description: |
 
 2. **写入记录文件** — 追加到分析记录文件：
    ```bash
-   records_dir = ~/.openclaw/workspace/skills/quant-trading/references/records/
+   records_dir = {baseDir}/references/records/
    record_file = records_dir/YYYY-MM-DD.json
    ```
    每条记录包含：时间戳、股票代码/选股策略、执行步数、各步因子数据、最终结论。
 
-3. **展示报告** — 将报告以结构化消息返回用户（飞书环境下用列表格式，webchat 用 markdown）
+3. **展示报告** — 将报告以结构化消息返回用户。
 
 ## 记录文件结构
 

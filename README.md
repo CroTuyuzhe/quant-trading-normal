@@ -1,21 +1,40 @@
+<div align="center">
+
 # 📊 quant-trading — 量化交易助手
 
-A股量化分析、交易决策与报告记录的统一入口。遵循 [AgentSkills](https://agentskills.io) 标准，调度两个已安装 Skill 的核心能力，完成「分析→决策→归档」闭环。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-blueviolet)](https://claude.ai/code)
+[![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-green)](https://agentskills.io)
 
-> 触发指令：`量化交易` 或 `/quant`
+<br>
 
-[依赖](#前置依赖) · [安装](#安装) · [使用](#使用) · [执行规则](#执行规则) · [决策权重](#决策权重) · [记录与归档](#记录与归档) · [目录结构](#目录结构)
+还在手动翻 K 线图找买卖点？<br>
+还在 Excel 里算估值分位算到眼花？<br>
+选了一堆股票不知道该买哪只？<br>
+分析完的数据转头就忘，下次还得从头来？<br>
+
+**一个指令搞定「分析→决策→归档」，量化交易全自动闭环！**
+
+<br>
+
+触发指令：`量化交易` 或 `/quant`<br>
+自动调度两个量化 Skill，5 维度加权打分，输出明确的 **买入 / 观望 / 规避** 结论
+
+[前置依赖](#前置依赖) · [安装](#安装) · [使用](#使用) · [执行规则](#执行规则) · [效果示例](#效果示例) · [决策权重](#决策权重) · [项目结构](#项目结构)
+
+</div>
 
 ---
 
 ## 前置依赖
 
-本 Skill **不包含独立的量化引擎**，核心能力完全依赖以下两个已安装的 Skill，三者必须在同一目录下：
+本 Skill **不包含独立的量化引擎**，核心能力完全依赖以下两个 Skill，三者必须安装在同一 skills 目录下：
 
 | 依赖 Skill | 用途 | 仓库 |
 |-----------|------|------|
-| **cn-stock-quant** | 个股全面量化分析（估值分位、FCF、因子信号、风险指标、动量、资金面、事件日历、交易回测） | [cn-stock-quant](https://github.com/CroTuyuzhe/cn-stock-quant) |
-| **quant-stock-screener** | 量化多因子选股系统（6大策略组合，覆盖A股/港股） | [quant-stock-screener](https://github.com/CroTuyuzhe/quant-stock-screener) |
+| **cn-stock-quant** | 个股全面量化分析 — 估值分位、FCF 分红模型、9因子信号、风险指标、动量、资金面、事件日历、交易回测 | [cn-stock-quant](https://github.com/CroTuyuzhe/cn-stock-quant) |
+| **quant-stock-screener** | 量化多因子选股 — 6大策略组合（低估值/成长/质量/动量/低波动/情绪），覆盖 A 股 + 港股 | [quant-stock-screener](https://github.com/CroTuyuzhe/quant-stock-screener) |
 
 > ⚠️ **必须同时安装以上两个 Skill，否则本 Skill 无法运行。**
 
@@ -25,56 +44,119 @@ A股量化分析、交易决策与报告记录的统一入口。遵循 [AgentSki
 
 ### Claude Code
 
+> **重要**：Claude Code 从 **git 仓库根目录** 的 `.claude/skills/` 查找 skill。请在正确的位置执行。
+
 ```bash
-# 在你的项目根目录（git 仓库根目录）执行
+# 安装到当前项目（在 git 仓库根目录执行）
 mkdir -p .claude/skills
 
-# 安装三个 Skill（本体 + 两个依赖）
 git clone https://github.com/CroTuyuzhe/quant-trading-normal.git .claude/skills/quant-trading
 git clone https://github.com/CroTuyuzhe/cn-stock-quant.git .claude/skills/cn-stock-quant
 git clone https://github.com/CroTuyuzhe/quant-stock-screener.git .claude/skills/quant-stock-screener
+
+# 或安装到全局（所有项目都能用）
+git clone https://github.com/CroTuyuzhe/quant-trading-normal.git ~/.claude/skills/quant-trading
+git clone https://github.com/CroTuyuzhe/cn-stock-quant.git ~/.claude/skills/cn-stock-quant
+git clone https://github.com/CroTuyuzhe/quant-stock-screener.git ~/.claude/skills/quant-stock-screener
 ```
 
-### 依赖安装
+### OpenClaw
+
+```bash
+git clone https://github.com/CroTuyuzhe/quant-trading-normal.git ~/.openclaw/workspace/skills/quant-trading
+git clone https://github.com/CroTuyuzhe/cn-stock-quant.git ~/.openclaw/workspace/skills/cn-stock-quant
+git clone https://github.com/CroTuyuzhe/quant-stock-screener.git ~/.openclaw/workspace/skills/quant-stock-screener
+```
+
+### 依赖
 
 ```bash
 pip install akshare pandas numpy scipy
 ```
 
-安装完成后，输入 `量化交易` 或 `/quant` 即可触发。
-
 ---
 
 ## 使用
 
-### 个股分析
+在 Claude Code 中输入：
 
 ```
-用户: /quant
-助手: 📊 量化交易助手已启动
-      请输入要分析的个股代码（留空将自动执行全市场选股）：
-用户: 600104
-助手: 请输入量化执行步数（如 15；留空则单次分析）：
-用户: 5
-助手: 开始 600104 量化分析 x5...
-      20:12 — 观望
-      20:13 — 观望
-      20:14 — 观望
-      20:15 — 观望
-      20:16 — 观望
+/quant
+```
 
-      📋 量化交易报告 — 2026-04-02 20:16
-      [完整分析报告...]
+或直接说：
+
+```
+量化交易
+```
+
+按提示输入个股代码和执行步数，即可开始分析。
+
+### 管理命令
+
+| 命令 | 说明 |
+|------|------|
+| `量化交易` / `/quant` | 启动量化交易助手 |
+| `查看量化记录` / `量化历史` | 查询过往分析记录 |
+
+---
+
+## 效果示例
+
+### 个股分析（5步）
+
+```
+用户      ❯ /quant
+
+助手      ❯ 📊 量化交易助手已启动
+           请输入要分析的个股代码（留空将自动执行全市场选股）：
+
+用户      ❯ 600104
+
+助手      ❯ 请输入量化执行步数（如 15；留空则单次分析）：
+
+用户      ❯ 5
+
+助手      ❯ 开始 600104 量化分析 x5...
+           20:12 — 观望
+           20:13 — 观望
+           20:14 — 观望
+           20:15 — 观望
+           20:16 — 观望
+
+           📋 量化交易报告 — 2026-04-02 20:16
+
+           一、执行概要
+              股票：600104 上汽集团
+              步数：5
+              最终结论：⏸️ 观望（5/5 一致）
+
+           二、综合评分
+              估值 0.55 × 25% + 因子 0.55 × 30% + 风险 0.25 × 20%
+              + 动量 0.45 × 15% + 资金 0.65 × 10% = 0.419 → 观望
+
+           三、每步运行汇总
+              20:12 — 观望
+              20:13 — 观望
+              20:14 — 观望
+              20:15 — 观望
+              20:16 — 观望
+
+           四、风险提示
+              以上分析仅供参考，不构成投资建议。
 ```
 
 ### 全市场选股
 
 ```
-用户: /quant
-助手: 请输入要分析的个股代码（留空将自动执行全市场选股）：
-用户: [留空]
-助手: 执行全市场选股...
-      [选股结果 + 逐只深度分析]
+用户      ❯ /quant
+
+助手      ❯ 请输入要分析的个股代码（留空将自动执行全市场选股）：
+
+用户      ❯ [留空]
+
+助手      ❯ 执行全市场选股...
+           [选股结果 + Top 5 逐只深度分析 + 独立交易结论]
 ```
 
 ---
@@ -135,18 +217,20 @@ pip install akshare pandas numpy scipy
 references/records/YYYY-MM-DD.json
 ```
 
-记录内容包含：时间戳、股票代码、执行步数、因子数据、加权得分、最终结论。
+记录内容：时间戳、股票代码、执行步数、因子数据、加权得分、最终结论。
 
-用户可通过 `查看量化记录` 或 `量化历史` 查询过往分析。
+可通过 `查看量化记录` 或 `量化历史` 查询过往分析。
 
 ---
 
-## 目录结构
+## 项目结构
+
+本项目遵循 [AgentSkills](https://agentskills.io) 开放标准，整个 repo 就是一个 skill 目录：
 
 ```
 quant-trading/
-├── SKILL.md                          # Skill 入口与完整执行规则
-├── README.md
+├── SKILL.md                          # Skill 入口（官方 frontmatter）
+├── README.md                         # 本文件
 ├── LICENSE
 └── references/
     └── records/                      # 分析记录（按日期归档）
@@ -156,6 +240,17 @@ quant-trading/
 
 ---
 
-## License
+## 注意事项
 
-MIT
+- **必须同时安装** cn-stock-quant 和 quant-stock-screener，否则本 Skill 无法运行
+- 数据基于 akshare + 腾讯财经 API，A 股覆盖 5000+ 只，港股覆盖恒指成分股
+- 财务数据仅在年报/半年报/季报披露后更新
+- 结论仅供研究参考，不构成投资建议
+
+---
+
+<div align="center">
+
+MIT License © [CroTuyuzhe](https://github.com/CroTuyuzhe)
+
+</div>

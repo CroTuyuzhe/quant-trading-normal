@@ -1,0 +1,43 @@
+{
+  "date": "2026-04-02",
+  "records": [
+    {
+      "timestamp": "2026-04-02T20:06:00+08:00",
+      "mode": "stock",
+      "code": "600104",
+      "name": "上汽集团",
+      "steps": 3,
+      "price": 14.31,
+      "weighted_score": 0.419,
+      "conclusion": "观望"
+    },
+    {
+      "timestamp": "2026-04-02T20:12:00+08:00",
+      "mode": "stock",
+      "code": "600104",
+      "name": "上汽集团",
+      "steps": 5,
+      "price": 14.31,
+      "factors": {
+        "pe_3y_pct": 38.1,
+        "pb_10y_pct": 26.6,
+        "factor_composite": 0.2906,
+        "sharpe_1y": -0.152,
+        "sharpe_3y": 0.188,
+        "max_drawdown": -33.07,
+        "momentum_20d": 1.2,
+        "momentum_60d": -6.9,
+        "obv_trend": "流入"
+      },
+      "weighted_score": 0.419,
+      "conclusion": "观望",
+      "step_results": [
+        {"step": 1, "time": "20:12", "conclusion": "观望"},
+        {"step": 2, "time": "20:13", "conclusion": "观望"},
+        {"step": 3, "time": "20:14", "conclusion": "观望"},
+        {"step": 4, "time": "20:15", "conclusion": "观望"},
+        {"step": 5, "time": "20:16", "conclusion": "观望"}
+      ]
+    }
+  ]
+}
